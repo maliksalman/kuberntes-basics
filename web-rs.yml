@@ -3,14 +3,16 @@ kind: ReplicaSet
 metadata:
   name: web-v2
 spec:
-  replicas: 5
+  replicas: 3
   selector:
     matchLabels:
-      tier: web
+      tier: backend
+      team: the-a-team
   template:
     metadata:
       labels:
-        tier: web
+        tier: backend
+        team: the-a-team
     spec:
       containers:
       - name: main
@@ -19,12 +21,12 @@ spec:
         - containerPort: 80
           protocol: TCP
         resources:
+          requests:
+            cpu: 25m
+            memory: 32Mi
           limits:
             cpu: 50m
             memory: 32Mi
-        env:
-          - name: APP_VER
-            value: "2.0"
         lifecycle:
           postStart:
             exec:
@@ -33,3 +35,6 @@ spec:
               - -cx
               - |
                 echo "{\"host\":\"$HOSTNAME\", \"ver\":\"$APP_VER\"}" > /usr/share/nginx/html/index.html
+        env:
+        - name: APP_VER
+          value: "2.0"

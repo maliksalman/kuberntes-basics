@@ -7,7 +7,8 @@ spec:
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      tier: web
+      tier: backend
+      team: the-a-team
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -16,14 +17,12 @@ spec:
   template:
     metadata:
       labels:
-        tier: web
+        tier: backend
+        team: the-a-team
     spec:
       containers:
       - name: main
         image: nginx
-        env:
-        - name: APP_VER
-          value: "3.0"
         ports:
         - containerPort: 80
           protocol: TCP
@@ -45,3 +44,6 @@ spec:
               - -cx
               - |
                 echo "{\"host\":\"$HOSTNAME\", \"ver\":\"$APP_VER\"}" > /usr/share/nginx/html/index.html
+        env:
+        - name: APP_VER
+          value: "3.0"

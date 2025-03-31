@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: web
+  name: backend-service
 spec:
   type: ClusterIP
   ports:
-  - port: 80
+  - port: 8080
     targetPort: 80
   selector:
-    tier: web
+    tier: backend
+    team: the-a-team

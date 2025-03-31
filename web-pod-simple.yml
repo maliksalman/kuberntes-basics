@@ -8,4 +8,5 @@ spec:
     image: nginx
     ports:
     - containerPort: 80
+      protocol: TCP
       

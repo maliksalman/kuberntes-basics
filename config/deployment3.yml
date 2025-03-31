@@ -7,7 +7,7 @@ spec:
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      tier: web
+      tier: backend
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        tier: web
+        tier: backend
     spec:
       volumes:
         - name: config-vol

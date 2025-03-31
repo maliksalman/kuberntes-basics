@@ -4,8 +4,8 @@ kind: ConfigMap
 metadata:
   name: boot-config
 data:
-  SPRING_PROFILES_ACTIVE: externaldb
-  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/testdb
+  SPRING_PROFILES_ACTIVE: localpg
+  SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
 ---
 apiVersion: v1
 kind: Service
@@ -24,7 +24,13 @@ kind: Deployment
 metadata:
   name: boot
 spec:
-  replicas: 1
+  replicas: 3
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       tier: boot
@@ -34,11 +40,17 @@ spec:
         tier: boot
     spec:
       containers:
-      - name: main
-        image: maliksalman/dockerdemo:native-1.0
+      - name: app
+        image: maliksalman/spring-data-jdbc-sample:native-1.0
         envFrom:
         - configMapRef:
             name: boot-config
         ports:
         - containerPort: 8080
           protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /heroes
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
