@@ -4,7 +4,7 @@ metadata:
   name: my-app
 spec:
   replicas: 3
-  revisionHistoryLimit: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       tier: backend
