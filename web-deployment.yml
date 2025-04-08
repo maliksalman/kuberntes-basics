@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-v3
+  name: my-app
 spec:
   replicas: 3
   revisionHistoryLimit: 1
@@ -46,4 +46,4 @@ spec:
                 echo "{\"host\":\"$HOSTNAME\", \"ver\":\"$APP_VER\"}" > /usr/share/nginx/html/index.html
         env:
         - name: APP_VER
-          value: "3.0"
+          value: "4.0"
