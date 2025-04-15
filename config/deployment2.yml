@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: configdemo
+  name: cfg-app
 spec:
   replicas: 2
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      tier: backend
+      tier: cfg
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        tier: backend
+        tier: cfg
     spec:
       containers:
         - name: main
