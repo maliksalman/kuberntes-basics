@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      tier: backend
+      team: the-a-team
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        tier: backend
+        team: the-a-team
+    spec:
+      volumes:
+      - name: work-vol
+        emptyDir:
+          sizeLimit: 8Mi
+      initContainers:
+      - name: setup
+        image: alpine
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: work-vol
+        command:
+        - sh
+        - -cx
+        - |
+          echo "{\"host\":\"$HOSTNAME\", \"ver\":\"$APP_VER\"}" > /usr/share/nginx/html/index.html
+        env:
+        - name: APP_VER
+          value: "4.0"
+      containers:
+      - name: main
+        image: nginx
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: work-vol
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 50m
+            memory: 32Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
